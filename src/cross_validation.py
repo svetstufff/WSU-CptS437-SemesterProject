@@ -54,7 +54,7 @@ def main():
         print(name)
         #classifier.fit(X, y)
         #performance = -cross_val_score(classifier, X, y, scoring="neg_mean_squared_error", cv=13).mean()
-        performance = -cross_val_score(classifier, X, y, scoring="neg_mean_squared_error", cv=13).mean()
+        performance = -cross_val_score(classifier, X, y, scoring="neg_mean_squared_error", cv=13)
         print("\t", performance)
     performance = -cross_val_score(l, X, y, scoring="neg_mean_squared_error", cv=13).mean()
     print("sklearn lr: ", performance)
