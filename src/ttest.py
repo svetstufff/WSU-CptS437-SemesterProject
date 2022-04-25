@@ -1,6 +1,9 @@
 # performs a t-test on two samples of cross-validation mean squared errors 
 # returns the range of the resulting p-value, which denotes the statistical significance of the difference in sample means
 import scipy.stats
+import numpy as np
+from sklearn.metrics import accuracy_score
+from matplotlib import pyplot as plt
 def ttest(n, mean_squared_errors_1, mean_squared_errors_2):
     # find means of mean squared error values
 
@@ -34,4 +37,31 @@ def ttest(n, mean_squared_errors_1, mean_squared_errors_2):
 
     p_value = scipy.stats.t.sf(abs(t), df = n-1)*2
 
+
+
     return p_value
+
+
+def bt_conf(percent, X, y, classifier, num_iter):
+    
+    n_iterations = num_iter
+    n = len(y)
+    stats = list()
+    for i in range(n_iterations):
+        samples = np.random.randint(n, size=n)
+        X_train = X[samples]
+        y_train = y[samples]
+        test = np.random.randint(n, size=n//4)
+        X_test = X[test] 
+        y_test = y[test]
+        classifier.fit(X_train, y_train)
+        predictions = classifier.predict(X_test)
+        score = accuracy_score(y_test, predictions)
+        stats.append(score)
+    plt.hist(stats)
+    plt.show()
+    p = ((1.0-percent)/2.0) * 100
+    lower = max(0.0, np.percentile(stats, p))
+    p = (percent+((1.0-percent)/2.0)) * 100
+    upper = min(1.0, np.percentile(stats, p))
+    print(percent, lower, upper)
