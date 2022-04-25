@@ -1,9 +1,9 @@
-from statistics import linear_regression
 from data import X, y
 from sklearn.model_selection import cross_val_score
 from LinearRegression import LinearRegression
 from GreedyLinearRegression import GreedyLinearRegression
 import matplotlib.pyplot as plt
+from ttest import ttest
 
 def clear_last_line():
     print ("\033[A                             \033[A")
@@ -39,13 +39,21 @@ def cross_validation():
         "greedy": {}
     }
 
-    cross_val_mean_differences = {
-    }
+    # dictionary of % differences in cross val scores across all hyperparameter values
+    # keys are hyperparameters, values are dicts - each dict has hyperparameter values as keys, % differences as values
+    cross_val_mean_differences = {}
 
     for hyperparameter in hyperparameters_tested:
         cross_val_mean_differences[hyperparameter] = {}
 
-    
+    # dictionary of p-values for cross val scores across all hyperparameter values
+    # keys are hyperparameters, values are dicts - each dict has hyperparameter values as keys, p-value as values
+    cross_val_p_values = {}
+
+    for hyperparameter in hyperparameters_tested:
+        cross_val_p_values[hyperparameter] = {}
+
+    # dictionary of p-values in cross val scores across all 
 
     # populate structure of cross_val_means dict
     # for each hyperparameter, define a dict for each classifier - these will hold the cross val scores across all values tested
@@ -72,17 +80,23 @@ def cross_validation():
             linear = LinearRegression(**hyperparameter_values)
             greedy = GreedyLinearRegression(**hyperparameter_values)
 
-            # perform cross validation and store mean error across all subsets
-            linear_performance = -cross_val_score(linear, X, y, scoring="neg_mean_squared_error", cv=n_folds).mean()
-            greedy_performance = -cross_val_score(greedy, X, y, scoring="neg_mean_squared_error", cv=n_folds).mean()
+            # perform cross validation on both classifiers
+            linear_cross_val_scores = -cross_val_score(linear, X, y, scoring="neg_mean_squared_error", cv=n_folds)
+            greedy_cross_val_scores = -cross_val_score(greedy, X, y, scoring="neg_mean_squared_error", cv=n_folds)
+
+            # store average mean squared error for both classifiers
+            linear_performance = linear_cross_val_scores.mean()
+            greedy_performance =  greedy_cross_val_scores.mean()
 
             # update cross val means
             cross_val_means["linear"][hyperparameter][val] = linear_performance
             cross_val_means["greedy"][hyperparameter][val] = greedy_performance
 
-            # update difference between cross val means
+            # update % difference between cross val means
             cross_val_mean_differences[hyperparameter][val] = 100 * (greedy_performance - linear_performance) / linear_performance
 
+            # update p-value
+            cross_val_p_values[hyperparameter][val] = ttest(n_folds, linear_cross_val_scores, greedy_cross_val_scores)
 
             # show progress
             i += 1
@@ -116,6 +130,15 @@ def cross_validation():
         plt.ylabel('% difference')
         plt.plot(vals_tested[hyperparameter], cross_val_mean_differences[hyperparameter].values(), color="blue", linewidth=2)
         plt.legend(["% difference"])
+        plt.show()
+
+        # plot p-values across all values tested
+        plt.suptitle(f'Linear vs. greedy t-test: {hyperparameter}')
+        plt.title(f'statistical significance of difference in average {n_folds}-fold cross-validation scores')
+        plt.xlabel(hyperparameter)
+        plt.ylabel('p-value')
+        plt.plot(vals_tested[hyperparameter], cross_val_p_values[hyperparameter].values(), color="purple", linewidth=2)
+        plt.legend(["p-value"])
         plt.show()
         
 
