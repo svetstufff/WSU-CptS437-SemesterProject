@@ -4,9 +4,7 @@ from LinearRegression import LinearRegression
 from GreedyLinearRegression import GreedyLinearRegression
 import matplotlib.pyplot as plt
 from ttest import ttest
-
-def clear_last_line():
-    print ("\033[A                             \033[A")
+from helper import clear_last_line, save_graph
 
 def get_vals_tested(val_range, num_tested):
     return [val_range[0] + (i * (val_range[1] - val_range[0]) / (num_tested - 1)) for i in range(num_tested)]
@@ -19,12 +17,12 @@ def cross_validation():
     hyperparameters_tested = ["alpha", "iterations"]
 
     # number of values tested for each hyperparameter
-    num_hyperparameter_values_tested = 20
+    num_hyperparameter_values_tested = 10
 
     # define ranges of hyperparameter values tested
     ranges = {
-        "alpha": (0.001, 0.01),
-        "iterations": (25, 200)
+        "alpha": (0.01, 0.05),
+        "iterations": (25, 75)
     }
     
     # create an array of tested values for each hyperparameter using the ranges above and the number of values tested
@@ -63,8 +61,8 @@ def cross_validation():
     
     # defines hyperparameter values currently being tested - these are initially set to the default values
     hyperparameter_values = {
-        "alpha": 0.001,
-        "iterations": 25
+        "alpha": 0.01,
+        "iterations": 100
     }
 
     # main loop - iterate through each hyperparameter tested and construct dict of cross val means for each value tested
@@ -93,7 +91,7 @@ def cross_validation():
             cross_val_means["greedy"][hyperparameter][val] = greedy_performance
 
             # update % difference between cross val means
-            cross_val_mean_differences[hyperparameter][val] = 100 * (greedy_performance - linear_performance) / linear_performance
+            cross_val_mean_differences[hyperparameter][val] = (linear_performance - greedy_performance) / linear_performance
 
             # update p-value
             cross_val_p_values[hyperparameter][val] = ttest(n_folds, linear_cross_val_scores, greedy_cross_val_scores)
@@ -114,25 +112,31 @@ def cross_validation():
     # for each hyperparameter, plot % differences in errors between two classifiers across all values tested
     for hyperparameter in hyperparameters_tested:
         # plot cross val scrores across all hyperparameter values for linear and greedy
-        plt.suptitle(f'Linear vs. greedy: {hyperparameter}')
+        fig, _ = plt.subplots()   
+        plt.suptitle(f'Linear vs. greedy mean squared errors: {hyperparameter}')
         plt.title(f'average {n_folds}-fold cross-validation scores')
         plt.xlabel(hyperparameter)
         plt.ylabel('average mean squared error')
         plt.plot(vals_tested[hyperparameter], cross_val_means["linear"][hyperparameter].values(), color="red", linewidth=2)
         plt.plot(vals_tested[hyperparameter], cross_val_means["greedy"][hyperparameter].values(), color="green", linewidth=2)
         plt.legend(["linear", "greedy"])
-        plt.show()      
-        
+        plt.show()
+        save_graph(fig, f'{hyperparameter}')
+    
+
         # plot percent differences across all values tested
-        plt.suptitle(f'Linear vs. greedy: {hyperparameter}')
+        fig, _ = plt.subplots()
+        plt.suptitle(f'Linear vs. greedy % differences: {hyperparameter}')
         plt.title(f'% difference between average {n_folds}-fold cross-validation scores')
         plt.xlabel(hyperparameter)
         plt.ylabel('% difference')
         plt.plot(vals_tested[hyperparameter], cross_val_mean_differences[hyperparameter].values(), color="blue", linewidth=2)
         plt.legend(["% difference"])
         plt.show()
+        save_graph(fig, f'{hyperparameter}_diff')
 
         # plot p-values across all values tested
+        fig, _ = plt.subplots()   
         plt.suptitle(f'Linear vs. greedy t-test: {hyperparameter}')
         plt.title(f'statistical significance of difference in average {n_folds}-fold cross-validation scores')
         plt.xlabel(hyperparameter)
@@ -140,6 +144,7 @@ def cross_validation():
         plt.plot(vals_tested[hyperparameter], cross_val_p_values[hyperparameter].values(), color="purple", linewidth=2)
         plt.legend(["p-value"])
         plt.show()
+        save_graph(fig, f'{hyperparameter}_p')
         
 
 cross_validation()
