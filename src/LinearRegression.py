@@ -9,8 +9,10 @@ class LinearRegression(BaseEstimator):
 
     # learns a linear function that fits the relationship between the provided feature and class values
     def fit(self, X, y):
-        # mean squared error before each epoch - this eventually gets returned
-        mean_squared_errors = np.zeros(self.iterations)
+        # terms collected before each epoch - these are used to plot thetas vs. loss in 3D (see loss_paths.py)
+        bias_path = np.zeros(self.iterations) # value of bias term 
+        theta_1_path = np.zeros(self.iterations) # value of first theta coefficient
+        loss_path = np.zeros(self.iterations) # mean squared error before each epoch
 
         n = len(y) # size of dataset, number of datapoints
         k = len(X[0]) # dimensionality, number of features
@@ -21,6 +23,10 @@ class LinearRegression(BaseEstimator):
         # use predicted and ground truth class values in gradient descent method to update coefficient vector
         epochs = 0
         while epochs < self.iterations:
+            # update current theta values
+            bias_path[epochs] = self.thetas[0]
+            theta_1_path[epochs] = self.thetas[1]
+
             # apply current linear function to each datapoint to compute predicted class values
             for i in range(n):
                 predicted[i] = self.thetas[0]
@@ -32,7 +38,7 @@ class LinearRegression(BaseEstimator):
             for i in range(n):
                 diff = y[i] - predicted[i]      # y - h(x)
                 total_diff[0] += diff         # Update Theta_0 by diff
-                mean_squared_errors[epochs] += diff ** 2 # update mean squared error for current epoch
+                loss_path[epochs] += diff ** 2 # update mean squared error for current epoch
                 for j in range(k):
                     total_diff[j+1] += diff * X[i][j]   # Update Theta_1 by diff * x
             
@@ -41,11 +47,11 @@ class LinearRegression(BaseEstimator):
                 self.thetas[j] += self.alpha * total_diff[j]
 
             # compute mean by dividing sum of squared errors by num datapoints
-            mean_squared_errors[epochs] /= n
+            loss_path[epochs] /= n    
 
             epochs += 1
 
-        return mean_squared_errors
+        return bias_path, theta_1_path, loss_path
 
     # returns an array of predicted class values for each feature vector in X
     # uses linear function (represented by coefficient vector self.thetas) learned in fit()

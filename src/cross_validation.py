@@ -1,4 +1,4 @@
-from data import X, y
+from data import X_diabetes as X, y_diabetes as y
 from sklearn.model_selection import cross_val_score
 from LinearRegression import LinearRegression
 from GreedyLinearRegression import GreedyLinearRegression
@@ -10,6 +10,9 @@ def get_vals_tested(val_range, num_tested):
     return [val_range[0] + (i * (val_range[1] - val_range[0]) / (num_tested - 1)) for i in range(num_tested)]
 
 def cross_validation():
+    # use only a subset of dataset to control runtime
+    X, y = X[:100], y[:100]
+
     # number of folds performed in all cross-validation tests
     n_folds = 3
 
