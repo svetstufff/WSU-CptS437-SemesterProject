@@ -33,7 +33,7 @@ def ttest(n, mean_squared_errors_1, mean_squared_errors_2):
         
 
     p_value = scipy.stats.t.sf(abs(t), df = n-1)*2
-    
 
 
-    return p_value_min, p_value_max
+
+    return p_value
