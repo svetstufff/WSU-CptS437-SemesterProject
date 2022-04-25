@@ -28,12 +28,10 @@ def ttest(n, mean_squared_errors_1, mean_squared_errors_2):
         sum_ahat_minus_bhat_sqrd += (mu_a - l_err1[i] - mu_b - l_err2[i]) ** 2
         i += 1
     
-    t = (mu_a - mu_b) ((n(n-1) / sum_ahat_minus_bhat_sqrd) ** 1/2)
+    t = (mu_a - mu_b) * ((n*(n-1) / sum_ahat_minus_bhat_sqrd) ** 1/2)
 
         
 
     p_value = scipy.stats.t.sf(abs(t), df = n-1)*2
-    
 
-
-    return p_value_min, p_value_max
+    return p_value
