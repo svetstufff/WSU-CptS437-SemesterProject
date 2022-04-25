@@ -6,6 +6,7 @@ class GreedyLinearRegression(BaseEstimator):
     def __init__(self, alpha = 0.001, iterations = 100):
         self.alpha = alpha # learning rate
         self.iterations = iterations # number of epochs used to learn the coefficient vector
+        self.name = "greedy"
     
     @staticmethod
     def __sum_squared_features(X, n, k):

@@ -5,7 +5,8 @@ from sklearn.base import BaseEstimator
 class LinearRegression(BaseEstimator):
     def __init__(self, alpha = 0.001, iterations = 100):
         self.alpha = alpha # learning rate
-        self.iterations = iterations # number of epochs used to learn the coefficient vector
+        self.iterations = iterations # number of epochs used to learn the coefficient vector\
+        self.name = "linear"
 
     # learns a linear function that fits the relationship between the provided feature and class values
     def fit(self, X, y):

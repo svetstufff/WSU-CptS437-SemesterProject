@@ -3,8 +3,36 @@ from sklearn.model_selection import cross_val_score
 from LinearRegression import LinearRegression
 from GreedyLinearRegression import GreedyLinearRegression
 import matplotlib.pyplot as plt
-from ttest import ttest
-from helper import clear_last_line, save_graph
+from helper import show_progress, save_graph
+import scipy.stats
+
+# performs a t-test on two samples of cross-validation mean squared errors 
+# returns the range of the resulting p-value, which denotes the statistical significance of the difference in sample means
+def ttest(n, mean_squared_errors_1, mean_squared_errors_2):
+    # find means of mean squared error values
+    l_err1 = list(mean_squared_errors_1)
+    l_err2 = list(mean_squared_errors_2)
+    sum_errors_1 = 0.0
+    sum_errors_2 = 0.0
+    for i in l_err1:
+        sum_errors_1 += i
+    for i in l_err2:
+        sum_errors_2 +=i
+    mu_a = sum_errors_1 / n
+    mu_b = sum_errors_2 / n
+
+    # use formula to compute t-value
+    i = 0
+    sum_ahat_minus_bhat_sqrd = 0
+    while i < n:
+        sum_ahat_minus_bhat_sqrd += (mu_a - l_err1[i] - mu_b - l_err2[i]) ** 2
+        i += 1
+    t = (mu_a - mu_b) * ((n*(n-1) / sum_ahat_minus_bhat_sqrd) ** 1/2)
+    
+    # convert t-value to p-value
+    p_value = scipy.stats.t.sf(abs(t), df = n-1)*2
+
+    return p_value
 
 def get_vals_tested(val_range, num_tested):
     return [val_range[0] + (i * (val_range[1] - val_range[0]) / (num_tested - 1)) for i in range(num_tested)]
@@ -100,11 +128,8 @@ def cross_validation():
             cross_val_p_values[hyperparameter][val] = ttest(n_folds, linear_cross_val_scores, greedy_cross_val_scores)
 
             # show progress
+            show_progress(i, num_hyperparameter_values_tested)
             i += 1
-            if (i > 1):
-                clear_last_line()
-            print("\t", 100*(i / num_hyperparameter_values_tested), "%", sep="")
-
 
         # reset hyperparameter to default value for next tests
         hyperparameter_values[hyperparameter] = default_val
