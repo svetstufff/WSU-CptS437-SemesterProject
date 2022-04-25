@@ -9,6 +9,9 @@ class LinearRegression(BaseEstimator):
 
     # learns a linear function that fits the relationship between the provided feature and class values
     def fit(self, X, y):
+        # mean squared error before each epoch - this eventually gets returned
+        mean_squared_errors = np.zeros(self.iterations)
+
         n = len(y) # size of dataset, number of datapoints
         k = len(X[0]) # dimensionality, number of features
         self.thetas = np.zeros(k+1) # learned linear function represented as a vector of coefficients (initially, all coefficients = 0)
@@ -29,17 +32,20 @@ class LinearRegression(BaseEstimator):
             for i in range(n):
                 diff = y[i] - predicted[i]      # y - h(x)
                 total_diff[0] += diff         # Update Theta_0 by diff
+                mean_squared_errors[epochs] += diff ** 2 # update mean squared error for current epoch
                 for j in range(k):
                     total_diff[j+1] += diff * X[i][j]   # Update Theta_1 by diff * x
             
-
-
             # update coefficients using learning rate and partial derivatives computed above 
             for j in range(k+1):
                 self.thetas[j] += self.alpha * total_diff[j]
 
+            # compute mean by dividing sum of squared errors by num datapoints
+            mean_squared_errors[epochs] /= n
 
-            epochs += 1        
+            epochs += 1
+
+        return mean_squared_errors
 
     # returns an array of predicted class values for each feature vector in X
     # uses linear function (represented by coefficient vector self.thetas) learned in fit()

@@ -5,6 +5,6 @@ def clear_last_line():
 
 def save_graph(fig, filename):
     html_str = mpld3.fig_to_html(fig)
-    Html_file = open(f'cross_validation_graphs/{filename}.html',"w")
+    Html_file = open(f'graphs/{filename}.html',"w")
     Html_file.write(html_str)
     Html_file.close()
