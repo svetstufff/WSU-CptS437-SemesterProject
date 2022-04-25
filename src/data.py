@@ -4,4 +4,4 @@ from sklearn.datasets import load_diabetes
 X, y = load_diabetes(return_X_y=True)
 
 # use only a subset of dataset to control runtime
-X, y = X[:1000], y[:1000]
+X, y = X[:100], y[:100]
