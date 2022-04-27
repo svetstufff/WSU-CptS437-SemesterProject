@@ -32,7 +32,7 @@ def bootstrap(percent, X, y, classifier, num_resamples):
 def plot_bootstrap():
     # defines the hyperparameters used for each classifier
     hyperparameters = {
-        "alpha": 0.004,
+        "alpha": 0.01,
         "iterations": 100
     }
 
