@@ -32,7 +32,7 @@ def bootstrap(percent, X, y, classifier, num_resamples):
 def plot_bootstrap():
     # defines the hyperparameters used for each classifier
     hyperparameters = {
-        "alpha": 0.0025,
+        "alpha": 0.0050,
         "iterations": 100
     }
 
@@ -54,16 +54,17 @@ def plot_bootstrap():
     plt.title(f'alpha={hyperparameters["alpha"]}, iterations={hyperparameters["iterations"]}')
     plt.xlabel('mean squared error')
     plt.ylabel('frequency')
+    alph = 1
     for classifier in classifiers:
         interval, stats = bootstrap(percent=percent, X=X, y=y, classifier=classifier, num_resamples=num_resamples)
 
         # plot histogram of bootstrapped errors
-        (counts, _, _) = plt.hist(stats, color=classifier_colors[classifier.name])
+        (counts, _, _) = plt.hist(stats, color=classifier_colors[classifier.name], alpha = alph)
         interval_height = [np.max(counts) * 1.1] * 2 # height of each interval will be set to 10% larger than largest count across all bins
 
         # plot confidence interval
         plt.plot(interval, interval_height, color=classifier_colors[classifier.name])
-
+        alph -= .2
     plt.legend(["linear", "greedy"])
 
     # display and save graph
