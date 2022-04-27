@@ -54,13 +54,14 @@ def plot_bootstrap():
     plt.title(f'alpha={hyperparameters["alpha"]}, iterations={hyperparameters["iterations"]}')
     plt.xlabel('mean squared error')
     plt.ylabel('frequency')
+    alph = 1
     for classifier in classifiers:
         interval, stats = bootstrap(percent=percent, X=X, y=y, classifier=classifier, num_resamples=num_resamples)
 
         color = classifier_colors[classifier.name]
 
         # plot histogram of bootstrapped errors
-        (counts, _, _) = plt.hist(stats, color=color, label=classifier.name)
+        (counts, _, _) = plt.hist(stats, color=color, label=classifier.name, alpha = alph)
         plt.legend()
         interval_height = [np.max(counts) * 1.1] * 2 # height of each interval will be set to 10% larger than largest count across all bins
 
@@ -68,8 +69,9 @@ def plot_bootstrap():
         plt.plot(interval, interval_height, color=color) # plot line
         plt.scatter(interval, interval_height, color=color) # plot lower and upper bounds
         plt.scatter(np.mean(stats), interval_height[:1], color=classifier_colors[classifier.name]) # plot center
-
+        alph -=.2
     # display and save graph
+
     plt.show()
     save_graph(fig, f'confidence_intervals')
 
