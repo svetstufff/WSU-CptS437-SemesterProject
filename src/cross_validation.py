@@ -42,18 +42,18 @@ def cross_validation():
     X, y = X_[:100], y_[:100]
 
     # number of folds performed in all cross-validation tests
-    n_folds = 3
+    n_folds = 5
 
     # names of hyperparameters tested
     hyperparameters_tested = ["alpha", "iterations"]
 
     # number of values tested for each hyperparameter
-    num_hyperparameter_values_tested = 10
+    num_hyperparameter_values_tested = 20
 
     # define ranges of hyperparameter values tested
     ranges = {
-        "alpha": (0.01, 0.05),
-        "iterations": (25, 75)
+        "alpha": (0.03, 0.05),
+        "iterations": (25, 100)
     }
     
     # create an array of tested values for each hyperparameter using the ranges above and the number of values tested
@@ -92,7 +92,7 @@ def cross_validation():
     
     # defines hyperparameter values currently being tested - these are initially set to the default values
     hyperparameter_values = {
-        "alpha": 0.01,
+        "alpha": 0.03,
         "iterations": 100
     }
 
@@ -149,7 +149,7 @@ def cross_validation():
         plt.plot(vals_tested[hyperparameter], cross_val_means["greedy"][hyperparameter].values(), color="green", linewidth=2)
         plt.legend(["linear", "greedy"])
         plt.show()
-        save_graph(fig, f'{hyperparameter}')
+        #save_graph(fig, f'{hyperparameter}')
     
 
         # plot percent differences across all values tested
@@ -161,7 +161,7 @@ def cross_validation():
         plt.plot(vals_tested[hyperparameter], cross_val_mean_differences[hyperparameter].values(), color="blue", linewidth=2)
         plt.legend(["% difference"])
         plt.show()
-        save_graph(fig, f'{hyperparameter}_diff')
+        #save_graph(fig, f'{hyperparameter}_diff')
 
         # plot p-values across all values tested
         fig, _ = plt.subplots()   
@@ -172,7 +172,7 @@ def cross_validation():
         plt.plot(vals_tested[hyperparameter], cross_val_p_values[hyperparameter].values(), color="purple", linewidth=2)
         plt.legend(["p-value"])
         plt.show()
-        save_graph(fig, f'{hyperparameter}_p')
+        #save_graph(fig, f'{hyperparameter}_p')
         
 
 cross_validation()
