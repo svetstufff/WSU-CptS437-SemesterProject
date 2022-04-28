@@ -32,12 +32,12 @@ def bootstrap(percent, X, y, classifier, num_resamples):
 def plot_bootstrap():
     # defines the hyperparameters used for each classifier
     hyperparameters = {
-        "alpha": 0.01,
+        "alpha": 0.004,
         "iterations": 100
     }
 
     percent = 95
-    num_resamples = 100
+    num_resamples = 1000
 
     # initialize both classifiers using hyperparameters above
     linear = LinearRegression(**hyperparameters)
@@ -63,7 +63,7 @@ def plot_bootstrap():
         # plot histogram of bootstrapped errors
         (counts, _, _) = plt.hist(stats, color=color, label=classifier.name, alpha = alph)
         plt.legend()
-        interval_height = [np.max(counts) * 1.1] * 2 # height of each interval will be set to 10% larger than largest count across all bins
+        interval_height = [np.max(counts) * 1.25] * 2 # height of each interval will be set to 10% larger than largest count across all bins
 
         # plot confidence interval
         plt.plot(interval, interval_height, color=color) # plot line

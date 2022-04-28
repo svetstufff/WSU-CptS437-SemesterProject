@@ -36,9 +36,11 @@ def loss_paths():
     # plot 3D figure
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    ax.scatter(linear_bias_path, linear_theta_1_path, linear_loss_path, c='red')
+    ax.scatter(linear_bias_path, linear_theta_1_path, linear_loss_path, label='linear', c='red')
+    plt.legend()
     ax.plot(linear_bias_path, linear_theta_1_path, linear_loss_path, c='red')
-    ax.scatter(greedy_bias_path, greedy_theta_1_path, greedy_loss_path, c='green')
+    ax.scatter(greedy_bias_path, greedy_theta_1_path, greedy_loss_path, label='greedy', c='green')
+    plt.legend()
     ax.plot(greedy_bias_path, greedy_theta_1_path, greedy_loss_path, c='green')
     plt.show()
     save_graph(fig, f'loss_paths_3D')
