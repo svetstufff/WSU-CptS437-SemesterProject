@@ -4,12 +4,8 @@ from GreedyLinearRegression import GreedyLinearRegression
 import matplotlib.pyplot as plt
 from helper import save_graph
 
-def loss_paths():
+def loss_paths(hyperparameters):
     # defines the hyperparameters used for each classifier
-    hyperparameters = {
-        "alpha": 0.00393,
-        "iterations": 100
-    }
 
     # initialize both classifiers using hyperparameters above
     linear = LinearRegression(**hyperparameters)
@@ -46,4 +42,4 @@ def loss_paths():
     save_graph(fig, f'loss_paths_3D')
 
     
-loss_paths()
+loss_paths(hyperparameters={ "alpha": 0.00393, "iterations": 100 })
