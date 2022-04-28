@@ -10,3 +10,14 @@ hyperparameters = {
     "alpha": 0.00395,
     "iterations": 100
 }
+
+# cross validation
+ranges = {
+    "alpha": (0.005, 0.02),
+    "iterations": (50, 100)
+}
+
+hyperparameter_values = {
+    "alpha": 0.02,
+    "iterations": 100
+}

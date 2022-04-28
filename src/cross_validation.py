@@ -1,45 +1,53 @@
-from data import X_diabetes as X_, y_diabetes as y_
+from data import X_diabetes as X, y_diabetes as y
 from sklearn.model_selection import cross_val_score
 from LinearRegression import LinearRegression
 from GreedyLinearRegression import GreedyLinearRegression
 import matplotlib.pyplot as plt
 from helper import show_progress, save_graph
 import scipy.stats
+import numpy as np
+import math
 
 # performs a t-test on two samples of cross-validation mean squared errors 
 # returns the range of the resulting p-value, which denotes the statistical significance of the difference in sample means
-def ttest(n, mean_squared_errors_1, mean_squared_errors_2):
+def ttest(n, errors_1, errors_2):
     # find means of mean squared error values
-    l_err1 = list(mean_squared_errors_1)
-    l_err2 = list(mean_squared_errors_2)
-    sum_errors_1 = 0.0
-    sum_errors_2 = 0.0
-    for i in l_err1:
-        sum_errors_1 += i
-    for i in l_err2:
-        sum_errors_2 +=i
-    mu_a = sum_errors_1 / n
-    mu_b = sum_errors_2 / n
+    mean_1 = np.mean(errors_1)
+    mean_2 = np.mean(errors_2)
 
+    # convert datapoints to deviations from respective means
+    deviations_1 = [error - mean_1 for error in errors_1]
+    deviations_2 = [error - mean_2 for error in errors_2]
+
+    # compute denominator of t-value expression
+    denominator = 0
+    for deviation_1, deviation_2 in zip(deviations_1, deviations_2):
+        denominator += (deviation_1 - deviation_2) ** 2 # sum of squared differences in deviation
+        
     # use formula to compute t-value
-    i = 0
-    sum_ahat_minus_bhat_sqrd = 0
-    while i < n:
-        sum_ahat_minus_bhat_sqrd += (mu_a - l_err1[i] - mu_b - l_err2[i]) ** 2
-        i += 1
-    t = (mu_a - mu_b) * ((n*(n-1) / sum_ahat_minus_bhat_sqrd) ** 1/2)
+    t = (mean_1 - mean_2) * math.sqrt((n * (n - 1)) / denominator)
     
     # convert t-value to p-value
-    p_value = scipy.stats.t.sf(abs(t), df = n-1)*2
+    p = scipy.stats.t.sf(abs(t), df = n-1)*2
 
-    return p_value
+    return p
 
-def get_vals_tested(val_range, num_tested):
-    return [val_range[0] + (i * (val_range[1] - val_range[0]) / (num_tested - 1)) if (val_range[0] + (i * (val_range[1] - val_range[0]) / (num_tested - 1))) < 1 else int (val_range[0] + (i * (val_range[1] - val_range[0]) / (num_tested - 1)))  for i in range(num_tested)]
+# takes in a range and a number of values tested and returns an array of tested values 
+# int option is used to control rounding
+def get_vals_tested(val_range, num_tested, int=False):
+    vals_tested = [0] * num_tested
+    increment = (val_range[1] - val_range[0]) / (num_tested - 1)
+    val_tested = val_range[0]
+    for i in range(num_tested):
+        vals_tested[i] = val_tested if not int else math.floor(val_tested)
+        val_tested += increment
+    return vals_tested
 
 def cross_validation():
-    # use only a subset of dataset to control runtime
-    X, y = X_[:100], y_[:100]
+    # use only subset of data to control runtime
+    global X
+    global y
+    X, y = X[:100], y[:100]
 
     # number of folds performed in all cross-validation tests
     n_folds = 5
@@ -48,18 +56,18 @@ def cross_validation():
     hyperparameters_tested = ["alpha", "iterations"]
 
     # number of values tested for each hyperparameter
-    num_hyperparameter_values_tested = 20
+    num_hyperparameter_values_tested = 10
 
     # define ranges of hyperparameter values tested
     ranges = {
-        "alpha": (0.03, 0.05),
-        "iterations": (25, 100)
+        "alpha": (0.005, 0.02),
+        "iterations": (50, 100)
     }
     
     # create an array of tested values for each hyperparameter using the ranges above and the number of values tested
     vals_tested = {}
     for hyperparameter, range in ranges.items():
-        vals_tested[hyperparameter] = get_vals_tested(range, num_hyperparameter_values_tested)
+        vals_tested[hyperparameter] = get_vals_tested(range, num_hyperparameter_values_tested, int=(hyperparameter == "iterations")) # tested iteration values should be integers 
 
     # each classifier will have a dict of average mean squared errors 
     # the keys will be the hyperparameter, the values will be a dict - its keys will be the hyperparameter values tested, the values the mean cross validation score
@@ -92,7 +100,7 @@ def cross_validation():
     
     # defines hyperparameter values currently being tested - these are initially set to the default values
     hyperparameter_values = {
-        "alpha": 0.03,
+        "alpha": 0.02,
         "iterations": 100
     }
 
@@ -149,7 +157,7 @@ def cross_validation():
         plt.plot(vals_tested[hyperparameter], cross_val_means["greedy"][hyperparameter].values(), color="green", linewidth=2)
         plt.legend(["linear", "greedy"])
         plt.show()
-        #save_graph(fig, f'{hyperparameter}')
+        save_graph(fig, f'{hyperparameter}')
     
 
         # plot percent differences across all values tested
@@ -161,7 +169,7 @@ def cross_validation():
         plt.plot(vals_tested[hyperparameter], cross_val_mean_differences[hyperparameter].values(), color="blue", linewidth=2)
         plt.legend(["% difference"])
         plt.show()
-        #save_graph(fig, f'{hyperparameter}_diff')
+        save_graph(fig, f'{hyperparameter}_diff')
 
         # plot p-values across all values tested
         fig, _ = plt.subplots()   
@@ -172,7 +180,7 @@ def cross_validation():
         plt.plot(vals_tested[hyperparameter], cross_val_p_values[hyperparameter].values(), color="purple", linewidth=2)
         plt.legend(["p-value"])
         plt.show()
-        #save_graph(fig, f'{hyperparameter}_p')
+        save_graph(fig, f'{hyperparameter}_p')
         
 
 cross_validation()
