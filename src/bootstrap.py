@@ -22,6 +22,7 @@ def bootstrapped_confidence_interval(percent, X, y, classifier, num_resamples):
         # take a random sample of training instances with replacement
         resamples = np.random.randint(n, size=n)
         X_train = X[resamples]
+        print(y)
         y_train = y[resamples]
 
         # take a random sample of test instances with replacement
@@ -52,7 +53,7 @@ def bootstrapped_confidence_interval(percent, X, y, classifier, num_resamples):
 def bootstrap(X, y, dataset_name, hyperparameters):
     print("BOOTSTRAP -", dataset_name)
     percent = 95
-    num_resamples = 50
+    num_resamples = 200
 
     # initialize both classifiers using hyperparameters above
     linear = LinearRegression(**hyperparameters)
