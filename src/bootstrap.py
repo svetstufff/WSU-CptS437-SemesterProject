@@ -49,7 +49,7 @@ def bootstrap(percent, X, y, classifier, num_resamples):
     # return confidence interval + mean squared error values
     return [lower, upper], stats
 
-def plot_bootstrap():
+def plot_bootstrap(X, y):
     # defines the hyperparameters used for each classifier
     hyperparameters = {
         "alpha": 0.004,
