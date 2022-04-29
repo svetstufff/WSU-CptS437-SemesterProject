@@ -6,27 +6,47 @@ from data import X_diabetes as X, y_diabetes as y
 from LinearRegression import LinearRegression
 from GreedyLinearRegression import GreedyLinearRegression
 
+# constructs a confidence interval for the mean squared error of the provided regression classifier
+# employs the bootstrapping method to compute error values for many resamples of the provided dataset
+# returns the lower and upper bound of confidence interval + "stats", which are the mean squared error values for each resampled dataset
 def bootstrap(percent, X, y, classifier, num_resamples):
     print("|", classifier.name)
-    n = len(y)
-    stats = list()
+    n = len(y) # size of dataset
+    stats = [] # stores the mean squared error values for each resampling
+
+    # perform num_resamples resamples
+    # each resample consists of taking a random sample of training and test data
+    # from the dataset with replacement, training the classifier on the training sample,
+    # and finally computing mean squared error on the test sample
     for i in range(num_resamples):
+        # take a random sample of training instances with replacement
         resamples = np.random.randint(n, size=n)
         X_train = X[resamples]
         y_train = y[resamples]
+
+        # take a random sample of test instances with replacement
         test = np.random.randint(n, size=n // 4)
         X_test = X[test] 
         y_test = y[test]
+
+        # train classifier on training sample
         classifier.fit(X_train, y_train)
         predictions = classifier.predict(X_test)
+
+        # compute and store mean squared error of test sample
         score = mean_squared_error(y_test, predictions)
         stats.append(score)
+
+        # show progrress
         show_progress(i, num_resamples)
 
+    # compute lower and upper bound of confidence interval
     lower_percentile = (100 - percent) / 2
     lower = np.percentile(stats, lower_percentile)
     upper_percentile = 100 - lower_percentile
     upper = np.percentile(stats, upper_percentile)
+
+    # return confidence interval + mean squared error values
     return [lower, upper], stats
 
 def plot_bootstrap():
