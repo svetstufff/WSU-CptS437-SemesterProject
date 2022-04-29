@@ -9,7 +9,7 @@ from GreedyLinearRegression import GreedyLinearRegression
 # constructs a confidence interval for the mean squared error of the provided regression classifier
 # employs the bootstrapping method to compute error values for many resamples of the provided dataset
 # returns the lower and upper bound of confidence interval + "stats", which are the mean squared error values for each resampled dataset
-def bootstrap(percent, X, y, classifier, num_resamples):
+def bootstrapped_confidence_interval(percent, X, y, classifier, num_resamples):
     print("\t|", classifier.name)
     n = len(y) # size of dataset
     stats = [] # stores the mean squared error values for each resampling
@@ -49,10 +49,10 @@ def bootstrap(percent, X, y, classifier, num_resamples):
     # return confidence interval + mean squared error values
     return [lower, upper], stats
 
-def plot_bootstrap(X, y, dataset_name, hyperparameters):
+def bootstrap(X, y, dataset_name, hyperparameters):
     print("BOOTSTRAP -", dataset_name)
     percent = 95
-    num_resamples = 1000
+    num_resamples = 50
 
     # initialize both classifiers using hyperparameters above
     linear = LinearRegression(**hyperparameters)
@@ -71,7 +71,7 @@ def plot_bootstrap(X, y, dataset_name, hyperparameters):
     plt.ylabel('frequency')
     alph = 1
     for classifier in classifiers:
-        interval, stats = bootstrap(percent=percent, X=X, y=y, classifier=classifier, num_resamples=num_resamples)
+        interval, stats = bootstrapped_confidence_interval(percent=percent, X=X, y=y, classifier=classifier, num_resamples=num_resamples)
 
         color = classifier_colors[classifier.name]
 
@@ -89,5 +89,3 @@ def plot_bootstrap(X, y, dataset_name, hyperparameters):
 
     plt.show()
     save_graph(fig, f'confidence_intervals')
-
-plot_bootstrap()

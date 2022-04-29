@@ -42,6 +42,3 @@ def loss_paths(hyperparameters):
     ax.plot(greedy_bias_path, greedy_theta_1_path, greedy_loss_path, c='green')
     plt.show()
     save_graph(fig, f'loss_paths_3D')
-
-    
-loss_paths(hyperparameters={ "alpha": 0.00393, "iterations": 100 })

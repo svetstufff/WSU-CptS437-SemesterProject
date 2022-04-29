@@ -1,4 +1,8 @@
 import mpld3
+import os
+
+def clear_console():
+    os.system('cls')
 
 def clear_last_line():
     print ("\033[A                             \033[A")

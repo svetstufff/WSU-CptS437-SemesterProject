@@ -182,8 +182,4 @@ def cross_validation():
         plt.plot(vals_tested[hyperparameter], cross_val_p_values[hyperparameter].values(), color="purple", linewidth=2)
         plt.legend(["p-value"])
         plt.show()
-        save_graph(fig, f'{hyperparameter}_p')
-        
-
-cross_validation()
-            
+        save_graph(fig, f'{hyperparameter}_p')            

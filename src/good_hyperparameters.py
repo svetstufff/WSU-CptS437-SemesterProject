@@ -27,3 +27,4 @@ hyperparameters = {
     "alpha": 0.004,
     "iterations": 100
 }
+num_resamples = 1000
