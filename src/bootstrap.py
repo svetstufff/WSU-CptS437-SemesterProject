@@ -49,8 +49,8 @@ def bootstrap(percent, X, y, classifier, num_resamples):
     # return confidence interval + mean squared error values
     return [lower, upper], stats
 
-def plot_bootstrap(X, y, hyperparameters):
-    print("BOOTSTRAP")
+def plot_bootstrap(X, y, dataset_name, hyperparameters):
+    print("BOOTSTRAP -", dataset_name)
     percent = 95
     num_resamples = 1000
 
