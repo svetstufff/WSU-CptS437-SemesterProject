@@ -21,3 +21,9 @@ hyperparameter_values = {
     "alpha": 0.02,
     "iterations": 100
 }
+
+# bootstrap
+hyperparameters = {
+    "alpha": 0.004,
+    "iterations": 100
+}

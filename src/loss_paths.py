@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 from helper import save_graph
 
 def loss_paths(hyperparameters):
+    print('LOSS PATHS')
+
     # defines the hyperparameters used for each classifier
 
     # initialize both classifiers using hyperparameters above

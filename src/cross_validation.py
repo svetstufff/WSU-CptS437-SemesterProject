@@ -44,6 +44,8 @@ def get_vals_tested(val_range, num_tested, int=False):
     return vals_tested
 
 def cross_validation():
+    print('CROSS VALIDATION')
+
     # use only subset of data to control runtime
     global X
     global y
@@ -106,7 +108,7 @@ def cross_validation():
 
     # main loop - iterate through each hyperparameter tested and construct dict of cross val means for each value tested
     for hyperparameter in hyperparameters_tested:
-        print("|", hyperparameter)
+        print("\t|", hyperparameter)
         default_val = hyperparameter_values[hyperparameter] # store default val - hyperparameter will be reset to this val once testing is complete
         i = 0 # used to track progress
         for val in vals_tested[hyperparameter]:

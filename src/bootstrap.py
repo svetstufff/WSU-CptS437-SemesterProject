@@ -10,7 +10,7 @@ from GreedyLinearRegression import GreedyLinearRegression
 # employs the bootstrapping method to compute error values for many resamples of the provided dataset
 # returns the lower and upper bound of confidence interval + "stats", which are the mean squared error values for each resampled dataset
 def bootstrap(percent, X, y, classifier, num_resamples):
-    print("|", classifier.name)
+    print("\t|", classifier.name)
     n = len(y) # size of dataset
     stats = [] # stores the mean squared error values for each resampling
 
@@ -49,13 +49,8 @@ def bootstrap(percent, X, y, classifier, num_resamples):
     # return confidence interval + mean squared error values
     return [lower, upper], stats
 
-def plot_bootstrap(X, y):
-    # defines the hyperparameters used for each classifier
-    hyperparameters = {
-        "alpha": 0.004,
-        "iterations": 100
-    }
-
+def plot_bootstrap(X, y, hyperparameters):
+    print("BOOTSTRAP")
     percent = 95
     num_resamples = 1000
 

@@ -7,6 +7,8 @@ import timeit
 
 # reports the runtime of the two classifiers for different values of the iterations hyperparameter
 def runtime():
+    print('RUNTIME')
+
     # test iterations 1 - 100
     tested_iterations_values = [i for i in range(1, 100)]
 
