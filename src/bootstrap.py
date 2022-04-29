@@ -22,7 +22,6 @@ def bootstrapped_confidence_interval(percent, X, y, classifier, num_resamples):
         # take a random sample of training instances with replacement
         resamples = np.random.randint(n, size=n)
         X_train = X[resamples]
-        print(y)
         y_train = y[resamples]
 
         # take a random sample of test instances with replacement
